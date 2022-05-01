@@ -34,7 +34,7 @@ def get_fruityvice_data(this_fruit_choice):
     return fruityvice_normalized
 
 # new Section to display fruityvice api response
-streamlit.header('Fruityvice Fruit Advice!')
+streamlit.header("Fruityvice Fruit Advice!")
 try:
   fruit_choice = streamlit.text_input('What fruit would you like information about?', 'kiwi')
   if not fruit_choice:
@@ -56,15 +56,24 @@ except URLError as e:
 # don't run anything past here while we troubleshoot
 streamlit.stop()
 
-
-
-
-my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
-my_cur = my_cnx.cursor()
-my_cur.execute("SELECT * from fruit_load_list")
-my_data_rows = my_cur.fetchall()
-streamlit.header("The Fruit load list contains:")
-streamlit.dataframe(my_data_rows)
+streamlit.header("The fruit load list contains:")
+#snowflake related functions
+def get_fruit_laod_list():
+        with my_cnx.cursor() as my_cur:
+             my_cur.execute("SELECT * from fruit_load_list")
+             return my_cur.fetchall()
+# Adda  button to load the fruit
+if streamlit.button('Get Fruit load list'):
+    my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+    my_data_rows = get_fruit_load_list()
+    streamlit.dataframe(my_data_rows)
+    
+#my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+#my_cur = my_cnx.cursor()
+#my_cur.execute("SELECT * from fruit_load_list")
+#my_data_rows = my_cur.fetchall()
+#streamlit.header("The Fruit load list contains:")
+#streamlit.dataframe(my_data_rows)
 
 
 # new Section to add a selection
